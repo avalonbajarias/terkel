@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) September 2017 FTC Teams 25/5218
+ * Copyright (c) September 2017 FTC Teams 25/5218
  *
  *  All rights reserved.
  *
@@ -31,41 +31,51 @@
  *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package team25core;
+package test;
 
-public class Counter extends Object implements Comparable<Counter> {
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
-    private int value;
+import team25core.FourWheelDirectDrivetrain;
+import team25core.Robot;
+import team25core.RobotEvent;
+import team25core.TankDriveTask;
 
-    public Counter()
+@Autonomous(name = "FourWheelDriveTaskExample")
+@Disabled
+public class FourWheelDriveTaskExample extends Robot {
+
+    private DcMotor frontLeft;
+    private DcMotor frontRight;
+    private DcMotor backLeft;
+    private DcMotor backRight;
+
+    private FourWheelDirectDrivetrain drivetrain;
+
+    private static final int TICKS_PER_INCH = 79;
+
+    @Override
+    public void handleEvent(RobotEvent e)
     {
-        value = 0;
-    }
-
-    public Counter(int start)
-    {
-        value = start;
-    }
-
-    public void increment()
-    {
-        value++;
-    }
-
-    public int getValue()
-    {
-        return value;
+       // Nothing to do here...
     }
 
     @Override
-    public int compareTo(Counter another)
+    public void init()
     {
-        if (this.value == another.value) {
-            return 0;
-        } else if (this.value < another.value) {
-            return -1;
-        } else {
-            return 1;
-        }
+        frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
+        frontRight = hardwareMap.get(DcMotor.class, "frontRight");
+        backLeft = hardwareMap.get(DcMotor.class, "backLeft");
+        backRight = hardwareMap.get(DcMotor.class, "backRight");
+
+        drivetrain = new FourWheelDirectDrivetrain(frontRight, backRight, frontLeft, backLeft);
     }
+
+    @Override
+    public void start()
+    {
+        this.addTask(new TankDriveTask(this, drivetrain));
+    }
+
 }
